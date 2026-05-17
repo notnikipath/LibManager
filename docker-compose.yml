@@ -1,0 +1,161 @@
+﻿services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: libmanager-api-gateway
+    env_file: .env
+    ports:
+      - "8600:8600"
+    depends_on:
+      - catalog-service
+      - patron-service
+      - circulation-service
+      - reservation-service
+      - ebooks-service
+      - reports-service
+      - notification-service
+    networks: [libmanager-net]
+
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog-service/Dockerfile
+    container_name: libmanager-catalog
+    env_file: .env
+    ports:
+      - "32007:8601"
+    depends_on:
+      - postgres
+      - redis
+    networks: [libmanager-net]
+
+  patron-service:
+    build:
+      context: .
+      dockerfile: patron-service/Dockerfile
+    container_name: libmanager-patron
+    env_file: .env
+    ports:
+      - "32008:8602"
+    depends_on:
+      - postgres
+      - redis
+    networks: [libmanager-net]
+
+  circulation-service:
+    build:
+      context: .
+      dockerfile: circulation-service/Dockerfile
+    container_name: libmanager-circulation
+    env_file: .env
+    ports:
+      - "32009:8603"
+    depends_on:
+      - postgres
+      - redis
+    networks: [libmanager-net]
+
+  reservation-service:
+    build:
+      context: .
+      dockerfile: reservation-service/Dockerfile
+    container_name: libmanager-reservation
+    env_file: .env
+    ports:
+      - "32010:8604"
+    depends_on:
+      - redis
+    networks: [libmanager-net]
+
+  ebooks-service:
+    build:
+      context: .
+      dockerfile: ebooks-service/Dockerfile
+    container_name: libmanager-ebooks
+    env_file: .env
+    ports:
+      - "32011:8605"
+    depends_on:
+      - minio
+      - redis
+    networks: [libmanager-net]
+
+  reports-service:
+    build:
+      context: .
+      dockerfile: reports-service/Dockerfile
+    container_name: libmanager-reports
+    env_file: .env
+    ports:
+      - "32012:8606"
+    depends_on:
+      - postgres
+      - redis
+    networks: [libmanager-net]
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: libmanager-notification
+    env_file: .env
+    ports:
+      - "32013:8607"
+    depends_on:
+      - redis
+    networks: [libmanager-net]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: libmanager-frontend
+    env_file: .env
+    ports:
+      - "5186:5186"
+    depends_on:
+      - api-gateway
+    networks: [libmanager-net]
+
+  postgres:
+    image: postgres:16
+    container_name: libmanager-postgres
+    environment:
+      POSTGRES_DB: libmanager
+      POSTGRES_USER: libmanager
+      POSTGRES_PASSWORD: libmanager
+    ports:
+      - "32014:5432"
+    volumes:
+      - libmanager_postgres_data:/var/lib/postgresql/data
+    networks: [libmanager-net]
+
+  redis:
+    image: redis:7
+    container_name: libmanager-redis
+    ports:
+      - "6390:6379"
+    networks: [libmanager-net]
+
+  minio:
+    image: minio/minio:latest
+    container_name: libmanager-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: libmanager
+      MINIO_ROOT_PASSWORD: libmanager123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - libmanager_minio_data:/data
+    networks: [libmanager-net]
+
+networks:
+  libmanager-net:
+    driver: bridge
+
+volumes:
+  libmanager_postgres_data:
+  libmanager_minio_data:
