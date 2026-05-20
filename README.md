@@ -32,7 +32,7 @@ LibManager is a microservice platform for library automation:
 ## Run locally
 
 ```bash
-cd d:\Шарага\Кинжа6\Task_16_LibManager
+cd 'your/project/folder'
 docker compose up --build -d
 ```
 
