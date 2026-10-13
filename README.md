@@ -1,4 +1,4 @@
-﻿# LibManager
+# LibManager
 
 LibManager is a microservice platform for library automation:
 - catalog and classification (UDC/BBK)
@@ -32,7 +32,7 @@ LibManager is a microservice platform for library automation:
 ## Run locally
 
 ```bash
-cd 'your/project/folder'
+cd LibManager
 docker compose up --build -d
 ```
 

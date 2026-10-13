@@ -23,7 +23,7 @@ async function fetchDashboard(patronId) {
 }
 
 async function searchByTitle(title) {
-  const url = new URL(`${gatewayUrl}/catalog/search`);
+  const url = new URL(`${gatewayUrl}/catalog/search`, window.location.origin);
   if (title) {
     url.searchParams.set("title", title);
   }
@@ -83,7 +83,7 @@ export function DashboardPage() {
       <header className="hero">
         <div>
           <p className="eyebrow">LibManager</p>
-          <h1>Library Operations Hub</h1>
+          <h1>Library workspace</h1>
           <p className="sub">
             Catalog, patrons, circulation, reservations, digital books, and reporting in one flow.
           </p>
@@ -102,7 +102,7 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {error ? <div className="error-banner">{error}</div> : null}
+      {error ? <div className="error-banner" role="alert">{error}</div> : null}
 
       <section className="kpi-grid">
         <KpiCard
